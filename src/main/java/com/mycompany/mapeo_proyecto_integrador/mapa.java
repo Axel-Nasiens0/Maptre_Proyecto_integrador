@@ -7,6 +7,7 @@ package com.mycompany.mapeo_proyecto_integrador;
 import java.awt.BasicStroke;
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
@@ -27,8 +28,14 @@ import org.jxmapviewer.painter.Painter;
 import org.jxmapviewer.painter.CompoundPainter;
 import java.util.List;
 
+
+/**
+ *
+ * @author Umadc
+ */
+
 public class mapa extends javax.swing.JFrame {
-    
+
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(mapa.class.getName());
     
     // Lista para almacenar los puntos de siembra manteniendo su orden (A, B, C...)
@@ -36,21 +43,33 @@ public class mapa extends javax.swing.JFrame {
     private JXMapViewer mapViewer;
     private Waypoint puntoArrastrado = null; // Variable para gestionar qué punto se está moviendo
     private PanMouseInputListener panListener; // Listener para poder mover (panear) el mapa
-    
+
     public mapa() {
-        System.setProperty("https.protocols", "TLSv1.2,TLSv1.3");
+        initComponents(); // Primero inicializamos lo que viene del diseñador
         
-        initComponents();
+        // Configuraciones básicas de la ventana
+        this.setTitle("Sistema de Mapeo de Terrenos");
+        this.setSize(1000, 600);
         
-        // 1. Maximiza la ventana para que se abra en pantalla completa (con bordes y barra de tareas)
-        this.setExtendedState(javax.swing.JFrame.MAXIMIZED_BOTH);
+        // 1. Aseguramos el layout del contenedor principal
+        this.setLayout(new BorderLayout());
         
-        // 2. Centra la ventana en caso de que en algún momento se cambie de tamaño o no se maximice
-        this.setLocationRelativeTo(null);
+        // 2. Le damos un ancho fijo a tu panel lateral diseñado en NetBeans
+        jPanel1.setPreferredSize(new Dimension(300, 0));
+        jPanel1.setMinimumSize(new Dimension(300, 0));
+        jPanel1.setMaximumSize(new Dimension(300, Integer.MAX_VALUE));
+        
+        // 3. Añadimos los paneles usando BorderLayout
+        this.add(panelMapa, BorderLayout.CENTER); // Mapa al centro
+        this.add(jPanel1, BorderLayout.EAST);     // Tu panel a la derecha
         
         inicializarMapa();
+        
+        // 4. Forzamos la actualización de la interfaz
+        this.revalidate();
+        this.repaint();
     }
-    
+
     private void inicializarMapa() {
         mapViewer = new JXMapViewer();
 
@@ -68,6 +87,7 @@ public class mapa extends javax.swing.JFrame {
         mapViewer.setAddressLocation(new GeoPosition(21.814398, -102.771391)); // Punto inicial
         mapViewer.setZoom(2); // Nivel de zoom inicial
 
+        // Usamos ArrayList para mantener el orden de los vértices
         puntosDeSiembra = new ArrayList<>();
 
         // Pintor 1: Dibuja el polígono verde que une los puntos
@@ -124,8 +144,8 @@ public class mapa extends javax.swing.JFrame {
         MouseAdapter ma = new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
-                // Al presionar Ctrl, intentamos seleccionar un punto para mover
-                if (e.isControlDown()) {
+                // Al presionar Ctrl + Clic izquierdo, intentamos seleccionar un punto para mover
+                if (e.isControlDown() && e.getButton() == MouseEvent.BUTTON1) {
                     GeoPosition pos = mapViewer.convertPointToGeoPosition(e.getPoint());
                     puntoArrastrado = encontrarPuntoCercano(pos);
                     if (puntoArrastrado != null) {
@@ -193,6 +213,7 @@ public class mapa extends javax.swing.JFrame {
         }
         return null;
     }
+    
     
     /**
      * This method is called from within the constructor to initialize the form.
