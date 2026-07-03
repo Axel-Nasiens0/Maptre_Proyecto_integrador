@@ -14,7 +14,7 @@ public class Mapeo_proyecto_integrador {
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-            new mapeo().setVisible(true);
+            new mapa().setVisible(true);
         });
     }
 }
