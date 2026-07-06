@@ -13,8 +13,9 @@ import javax.swing.SwingUtilities;
 public class Mapeo_proyecto_integrador {
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            new mapa().setVisible(true);
-        });
+        
+        SessionFrom registration = new SessionFrom();
+        registration.setVisible(true);
+        registration.setLocationRelativeTo(null);
     }
 }

@@ -13,21 +13,25 @@ import java.util.ArrayList;
 public class Query {
 
     // --- AQUÍ ESTÁ EL MÉTODO QUE TE FALTABA PARA TU INICIO DE SESIÓN ---
-    public static boolean validarLogin(String email, String pass) {
+  public static boolean validarLogin(String email, String pass) {
         Connection con = Conexion.conectar();
-        
-        // FASE 6 (Depuración): Prevenir fallos catastróficos si con es null
+
         if (con == null) {
             System.out.println("Error crítico: No hay conexión con la base de datos.");
-            return false; 
+            return false;
         }
 
-        String sql = "SELECT * FROM usuarios WHERE correo = ? AND password = ?";
+        String sql = "SELECT * FROM usuario WHERE correo = ? AND password = ?";
         try (PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, email);
             ps.setString(2, pass);
             try (ResultSet rs = ps.executeQuery()) {
-                return rs.next(); // Retorna true si el usuario y contraseña coinciden
+                boolean exito = rs.next();
+                if(exito) {
+                    return true;
+                } else {
+                    return false;
+                }
             }
         } catch (SQLException e) {
             System.out.println("Error en Login: " + e.getMessage());
@@ -35,25 +39,31 @@ public class Query {
         }
     }
     
-    public static boolean registrarUsuario(String email, String pass) {
+   public static void registrarUsuario(String name, String email, String pass, String role, String date) {
         Connection con = Conexion.conectar();
-        
-        // FASE 6 (Depuración): Prevenir fallos catastróficos si con es null
+
         if (con == null) {
             System.out.println("Error crítico: No hay conexión con la base de datos.");
-            return false; 
+            return;
         }
 
-        String sql = "INSERT INTO usuarios ";
+        String sql = "INSERT INTO usuario (nombre_usuario, correo, password, rol, fecha_registro) VALUES (?, ?, ?, ?, ?)";
         try (PreparedStatement ps = con.prepareStatement(sql)) {
-            ps.setString(1, email);
-            ps.setString(2, pass);
-            try (ResultSet rs = ps.executeQuery()) {
-                return rs.next(); // Retorna true si el usuario y contraseña coinciden
+            ps.setString(1, name);
+            ps.setString(2, email);
+            ps.setString(3, pass);
+            ps.setString(4, role);
+            ps.setString(5, date);
+
+            int filasInsertadas = ps.executeUpdate();
+
+            if (filasInsertadas > 0) {
+                System.out.println("Inserción exitosa: " + filasInsertadas + " fila insertada");
+            } else {
+                System.out.println("No se insertó ninguna fila");
             }
         } catch (SQLException e) {
-            System.out.println("Error en Login: " + e.getMessage());
-            return false;
+            System.out.println("Error al insertar: " + e.getMessage());
         }
     }
 
@@ -95,4 +105,6 @@ public class Query {
             System.out.println("Error al consultar terrenos: " + e.getMessage());
         }
     }
+   
+    
 }
