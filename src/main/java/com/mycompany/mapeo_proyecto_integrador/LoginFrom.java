@@ -46,6 +46,7 @@ public class LoginFrom extends javax.swing.JFrame {
         jLabel6 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setUndecorated(true);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         cancel.setBackground(new java.awt.Color(110, 125, 78));
@@ -182,10 +183,15 @@ public class LoginFrom extends javax.swing.JFrame {
 
     String ro = role.getSelectedItem().toString();
     Query.registrarUsuario(nom, cor, cont, ro, fecha);
-    this.dispose();
-}
-    {
-              
+    
+    javax.swing.JOptionPane.showMessageDialog(this, "           Bienvenido a Map tre "
+        + "\nEsta es una aplicación sobre mapeo digital, "
+        + "\nesperemos disfrutes la experiencia");
+    SessionFrom inicio = new SessionFrom();
+    inicio.setLocationRelativeTo(null);
+    inicio.setVisible(true);
+        
+    this.dispose();   
     }//GEN-LAST:event_registerActionPerformed
 
     /**
