@@ -208,7 +208,7 @@ public class mapa extends javax.swing.JFrame {
 
     private void actualizarCalculos() {
         // Si no hay suficientes puntos, reiniciamos las etiquetas
-        if (puntosDeSiembra.size() < 3) {
+        if (puntosDeSiembra.size() < 2) {
             jLabel8.setText("0.0");  // Área
             jLabel13.setText("0.0"); // Perímetro
             return;
