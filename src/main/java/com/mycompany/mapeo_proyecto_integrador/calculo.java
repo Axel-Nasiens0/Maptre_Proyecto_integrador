@@ -18,7 +18,7 @@ public class calculo {
     // Algoritmo analítico de cálculo integral numérico de área para figuras irregulares (Fórmula Gauss-Green)
     public double calcularAreaIntegral() {
         if (lats == null || lons == null || lats.length != lons.length || lats.length < 3) return 0.0;
-        
+
         double sumaIntegral = 0.0;
         int n = lats.length;
 
@@ -28,9 +28,10 @@ public class calculo {
             sumaIntegral -= lons[i] * lats[sig];
         }
 
-        // Factor de conversión escalar métrico (Aproximación estándar plana para coordenadas cartesianas/geográficas)
+        // Factor de conversión escalar métrico
         double factorEscala = 111320.0 * 111320.0;
-        return Math.abs(sumaIntegral / 2.0) * factorEscala * 0.00001;
+        // SE ELIMINÓ EL * 0.00001 DEL FINAL
+        return Math.abs(sumaIntegral / 2.0) * factorEscala; 
     }
 
     public String getAliasTerreno() { 

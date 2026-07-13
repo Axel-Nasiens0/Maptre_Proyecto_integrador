@@ -164,6 +164,7 @@ public class mapa extends javax.swing.JFrame {
                     puntoArrastrado = new DefaultWaypoint(mapViewer.convertPointToGeoPosition(e.getPoint()));
                     puntosDeSiembra.set(index, puntoArrastrado);
                     mapViewer.repaint();
+                    actualizarCalculos();
                 }
             }
 
@@ -194,6 +195,7 @@ public class mapa extends javax.swing.JFrame {
                     puntosDeSiembra.clear();
                 }
                 mapViewer.repaint();
+                actualizarCalculos();
             }
         };
 
@@ -204,6 +206,59 @@ public class mapa extends javax.swing.JFrame {
         panelMapa.add(mapViewer, BorderLayout.CENTER);
     }
 
+    private void actualizarCalculos() {
+        // Si no hay suficientes puntos, reiniciamos las etiquetas
+        if (puntosDeSiembra.size() < 3) {
+            jLabel8.setText("0.0");  // Área
+            jLabel13.setText("0.0"); // Perímetro
+            return;
+        }
+
+        int n = puntosDeSiembra.size();
+        double[] lats = new double[n];
+        double[] lons = new double[n];
+
+        for (int i = 0; i < n; i++) {
+            GeoPosition pos = puntosDeSiembra.get(i).getPosition();
+            lats[i] = pos.getLatitude();
+            lons[i] = pos.getLongitude();
+        }
+
+        // 1. CÁLCULO DEL ÁREA
+        calculo calc = new calculo("Terreno Actual", lats, lons);
+        double area = calc.calcularAreaIntegral();
+        jLabel8.setText(String.format(java.util.Locale.US, "%.2f", area));
+
+        // 2. CÁLCULO DEL PERÍMETRO (Nueva lógica)
+        double perimetroMeters = 0.0;
+        double metrosPorGrado = 111320.0;
+
+        for (int i = 0; i < n; i++) {
+            int sig = (i + 1) % n; // Siguiente punto (vuelve al primero al final)
+
+            // Diferencia en grados
+            double dLat = lats[sig] - lats[i];
+            double dLon = lons[sig] - lons[i];
+
+            // Conversión aproximada a metros (Teorema de Pitágoras plano)
+            double metrosLat = dLat * metrosPorGrado;
+            double metrosLon = dLon * metrosPorGrado;
+
+            perimetroMeters += Math.sqrt((metrosLat * metrosLat) + (metrosLon * metrosLon));
+        }
+
+        // Mostrar el perímetro en jLabel13 con 2 decimales
+        jLabel13.setText(String.format(java.util.Locale.US, "%.2f", perimetroMeters));
+        
+        // 3. SIMULACIÓN DE VALORES TÉRMICOS (Añadir al final de actualizarCalculos)
+        // Genera valores simulados pero realistas para la demostración
+        double tempSimulada = 22.0 + (Math.random() * 8.0); // Entre 22°C y 30°C
+        double humSimulada = 45.0 + (Math.random() * 20.0); // Entre 45% y 65%
+
+        jLabel5.setText(String.format(java.util.Locale.US, "%.1f", tempSimulada)); // Temperatura
+        jLabel3.setText(String.format(java.util.Locale.US, "%.1f", humSimulada));  // Humedad
+    }
+    
     // Método auxiliar para detectar si hicimos clic sobre un punto existente
     private Waypoint encontrarPuntoCercano(GeoPosition pos) {
         for (Waypoint wp : puntosDeSiembra) {
