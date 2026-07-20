@@ -70,12 +70,14 @@ public class SessionFrom extends javax.swing.JFrame {
         mail.setBackground(new java.awt.Color(204, 204, 204));
         mail.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         mail.setBorder(null);
+        mail.addActionListener(this::mailActionPerformed);
         getContentPane().add(mail, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 200, 190, 30));
 
         password.setBackground(new java.awt.Color(204, 204, 204));
         password.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         password.setBorder(null);
         password.setOpaque(true);
+        password.addActionListener(this::passwordActionPerformed);
         getContentPane().add(password, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 250, 170, 30));
 
         get.setBackground(new java.awt.Color(110, 125, 78));
@@ -140,6 +142,7 @@ public class SessionFrom extends javax.swing.JFrame {
         });
     } else {
         javax.swing.JOptionPane.showMessageDialog(this, "Correo o contraseña incorrectos", "Error", 0);
+        password.setText("");
     }
     }//GEN-LAST:event_getActionPerformed
 
@@ -155,6 +158,16 @@ public class SessionFrom extends javax.swing.JFrame {
         // TODO add your handling code here:
         this.dispose();
     }//GEN-LAST:event_gooutActionPerformed
+
+    private void mailActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mailActionPerformed
+        // TODO add your handling code here:
+        password.requestFocusInWindow();
+    }//GEN-LAST:event_mailActionPerformed
+
+    private void passwordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_passwordActionPerformed
+        // TODO add your handling code here:
+        get.doClick();
+    }//GEN-LAST:event_passwordActionPerformed
 
     /**
      * @param args the command line arguments
