@@ -28,12 +28,10 @@ import org.jxmapviewer.painter.Painter;
 import org.jxmapviewer.painter.CompoundPainter;
 import java.util.List;
 
-
 /**
  *
  * @author Umadc
  */
-
 public class mapa extends javax.swing.JFrame {
 
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(mapa.class.getName());
@@ -144,12 +142,10 @@ public class mapa extends javax.swing.JFrame {
         MouseAdapter ma = new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
-                // Al presionar Ctrl + Clic izquierdo, intentamos seleccionar un punto para mover
                 if (e.isControlDown() && e.getButton() == MouseEvent.BUTTON1) {
                     GeoPosition pos = mapViewer.convertPointToGeoPosition(e.getPoint());
                     puntoArrastrado = encontrarPuntoCercano(pos);
                     if (puntoArrastrado != null) {
-                        // Desactivar paneo para evitar conflicto al mover el punto
                         mapViewer.removeMouseListener(panListener);
                         mapViewer.removeMouseMotionListener(panListener);
                     }
@@ -158,7 +154,6 @@ public class mapa extends javax.swing.JFrame {
 
             @Override
             public void mouseDragged(MouseEvent e) {
-                // Si estamos arrastrando un punto, actualizamos su coordenada
                 if (puntoArrastrado != null) {
                     int index = puntosDeSiembra.indexOf(puntoArrastrado);
                     puntoArrastrado = new DefaultWaypoint(mapViewer.convertPointToGeoPosition(e.getPoint()));
@@ -170,29 +165,35 @@ public class mapa extends javax.swing.JFrame {
 
             @Override
             public void mouseReleased(MouseEvent e) {
-                // Al soltar el mouse, reactivamos el paneo del mapa
                 if (puntoArrastrado != null) {
                     mapViewer.addMouseListener(panListener);
                     mapViewer.addMouseMotionListener(panListener);
+                    actualizarClimaApi(puntoArrastrado.getPosition()); // Llamada directa simplificada
                     puntoArrastrado = null;
                 }
             }
 
             @Override
             public void mouseClicked(MouseEvent e) {
-                // Doble clic izquierdo: Agregar nuevo punto
                 if (e.getClickCount() == 2 && e.getButton() == MouseEvent.BUTTON1) {
                     puntosDeSiembra.add(new DefaultWaypoint(mapViewer.convertPointToGeoPosition(e.getPoint())));
+                    if (!puntosDeSiembra.isEmpty()) { 
+                        actualizarClimaApi(puntosDeSiembra.get(puntosDeSiembra.size() - 1).getPosition()); 
+                    }
                 } 
-                // Clic derecho: Eliminar último punto
                 else if (e.getButton() == MouseEvent.BUTTON3) {
                     if (!puntosDeSiembra.isEmpty()) {
                         puntosDeSiembra.remove(puntosDeSiembra.size() - 1);
+                        if (!puntosDeSiembra.isEmpty()) { 
+                            actualizarClimaApi(puntosDeSiembra.get(puntosDeSiembra.size() - 1).getPosition()); 
+                        } else { 
+                            jLabel5.setText("--"); jLabel3.setText("--"); 
+                        }
                     }
                 } 
-                // Clic central (rueda): Limpiar todo
                 else if (e.getButton() == MouseEvent.BUTTON2) {
                     puntosDeSiembra.clear();
+                    jLabel5.setText("--"); jLabel3.setText("--"); 
                 }
                 mapViewer.repaint();
                 actualizarCalculos();
@@ -269,6 +270,44 @@ public class mapa extends javax.swing.JFrame {
         return null;
     }
     
+ 
+    public void actualizarClimaApi(GeoPosition pos) {
+        if (pos == null) return;
+        jLabel5.setText("...");
+        jLabel3.setText("...");
+        new Thread(() -> {
+            try {
+                String urlString = String.format(java.util.Locale.US,
+                    "https://api.open-meteo.com/v1/forecast?latitude=%f&longitude=%f&current=temperature_2m,relative_humidity_2m", 
+                    pos.getLatitude(), pos.getLongitude());
+                java.net.URL url = new java.net.URL(urlString);
+                java.net.HttpURLConnection conn = (java.net.HttpURLConnection) url.openConnection();
+                conn.setRequestMethod("GET");
+                if (conn.getResponseCode() == 200) {
+                    java.io.BufferedReader br = new java.io.BufferedReader(new java.io.InputStreamReader(conn.getInputStream()));
+                    StringBuilder sb = new StringBuilder();
+                    String line;
+                    while ((line = br.readLine()) != null) { sb.append(line); }
+                    br.close(); conn.disconnect();
+                    
+                  
+                    org.json.JSONObject json = new org.json.JSONObject(sb.toString());
+                    org.json.JSONObject current = json.getJSONObject("current");
+                    final double temp = current.getDouble("temperature_2m");
+                    final double hum = current.getDouble("relative_humidity_2m");
+                    javax.swing.SwingUtilities.invokeLater(() -> {
+                        jLabel5.setText(String.format(java.util.Locale.US, "%.1f", temp));
+                        jLabel3.setText(String.format(java.util.Locale.US, "%.0f", hum));
+                    });
+                } else { conn.disconnect(); }
+            } catch (Exception ex) {
+                javax.swing.SwingUtilities.invokeLater(() -> {
+                    jLabel5.setText("Err");
+                    jLabel3.setText("Err");
+                });
+            }
+        }).start();
+    }
     
     /**
      * This method is called from within the constructor to initialize the form.
