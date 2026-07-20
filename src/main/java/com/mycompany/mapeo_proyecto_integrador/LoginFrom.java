@@ -114,6 +114,7 @@ public class LoginFrom extends javax.swing.JFrame {
         password.setBackground(new java.awt.Color(204, 204, 204));
         password.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         password.setBorder(null);
+        password.addActionListener(this::passwordActionPerformed);
         getContentPane().add(password, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 310, 190, 30));
 
         register.setBackground(new java.awt.Color(110, 125, 78));
@@ -144,15 +145,18 @@ public class LoginFrom extends javax.swing.JFrame {
 
     private void nameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nameActionPerformed
         // TODO add your handling code here:
+        mail.requestFocusInWindow();
     }//GEN-LAST:event_nameActionPerformed
 
     private void mailActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mailActionPerformed
         // TODO add your handling code here:
+        role.requestFocusInWindow();
 
     }//GEN-LAST:event_mailActionPerformed
 
     private void roleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_roleActionPerformed
         // TODO add your handling code here:
+        password.requestFocusInWindow();
     }//GEN-LAST:event_roleActionPerformed
 
     private void registerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_registerActionPerformed
@@ -193,6 +197,11 @@ public class LoginFrom extends javax.swing.JFrame {
         
     this.dispose();   
     }//GEN-LAST:event_registerActionPerformed
+
+    private void passwordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_passwordActionPerformed
+        // TODO add your handling code here:
+        register.doClick();
+    }//GEN-LAST:event_passwordActionPerformed
 
     /**
      * @param args the command line arguments
