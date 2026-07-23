@@ -187,13 +187,18 @@ public class mapa extends javax.swing.JFrame {
                         if (!puntosDeSiembra.isEmpty()) { 
                             actualizarClimaApi(puntosDeSiembra.get(puntosDeSiembra.size() - 1).getPosition()); 
                         } else { 
-                            jLabel5.setText("--"); jLabel3.setText("--"); 
+                            jLabel5.setText("--"); 
+                            jLabel3.setText("--"); 
                         }
+                    } else {
+                        jLabel5.setText("--"); 
+                        jLabel3.setText("--");
                     }
                 } 
                 else if (e.getButton() == MouseEvent.BUTTON2) {
                     puntosDeSiembra.clear();
-                    jLabel5.setText("--"); jLabel3.setText("--"); 
+                    jLabel5.setText("--"); 
+                    jLabel3.setText("--"); 
                 }
                 mapViewer.repaint();
                 actualizarCalculos();
