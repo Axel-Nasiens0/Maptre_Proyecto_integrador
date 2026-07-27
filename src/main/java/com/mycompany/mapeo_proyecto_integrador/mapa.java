@@ -279,6 +279,7 @@ public class mapa extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        panelMapa = new javax.swing.JPanel();
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
@@ -296,7 +297,6 @@ public class mapa extends javax.swing.JFrame {
         jLabel14 = new javax.swing.JLabel();
         jLabel15 = new javax.swing.JLabel();
         jLabel16 = new javax.swing.JLabel();
-        panelMapa = new javax.swing.JPanel();
         jPanel3 = new javax.swing.JPanel();
         jLabel17 = new javax.swing.JLabel();
         jLabel18 = new javax.swing.JLabel();
@@ -309,6 +309,17 @@ public class mapa extends javax.swing.JFrame {
         jTable1 = new javax.swing.JTable();
         txtTerrainName = new javax.swing.JTextField();
         btnClearMap = new javax.swing.JButton();
+
+        javax.swing.GroupLayout panelMapaLayout = new javax.swing.GroupLayout(panelMapa);
+        panelMapa.setLayout(panelMapaLayout);
+        panelMapaLayout.setHorizontalGroup(
+            panelMapaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 761, Short.MAX_VALUE)
+        );
+        panelMapaLayout.setVerticalGroup(
+            panelMapaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 388, Short.MAX_VALUE)
+        );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setIconImages(null);
@@ -447,17 +458,6 @@ public class mapa extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        javax.swing.GroupLayout panelMapaLayout = new javax.swing.GroupLayout(panelMapa);
-        panelMapa.setLayout(panelMapaLayout);
-        panelMapaLayout.setHorizontalGroup(
-            panelMapaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 761, Short.MAX_VALUE)
-        );
-        panelMapaLayout.setVerticalGroup(
-            panelMapaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 388, Short.MAX_VALUE)
-        );
-
         jPanel3.setBackground(new java.awt.Color(255, 255, 255));
 
         jLabel17.setFont(new java.awt.Font("Yu Gothic UI Semibold", 1, 14)); // NOI18N
@@ -479,7 +479,7 @@ public class mapa extends javax.swing.JFrame {
 
         btnCalculateAndSave.setBackground(new java.awt.Color(110, 125, 78));
         btnCalculateAndSave.setForeground(new java.awt.Color(255, 255, 255));
-        btnCalculateAndSave.setText("Calcular, Filtrar y Guardar");
+        btnCalculateAndSave.setText("Filtrar y Guardar");
         btnCalculateAndSave.addActionListener(this::btnCalculateAndSaveActionPerformed);
 
         jLabel20.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
@@ -489,17 +489,15 @@ public class mapa extends javax.swing.JFrame {
         jTable1.setBackground(new java.awt.Color(216, 224, 199));
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {"Jitomate", "45cm"},
-                {"Pepino", "30 cm"},
-                {null, null},
-                {null, null}
+                {"Jitomate", "45cm", null},
+                {"Pepino", "30 cm", null}
             },
             new String [] {
-                "Cultivo", "Distancia Mínima Requerida"
+                "Cultivo", "Distancia Mínima Requerida", "Terreno/Estado"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class
+                java.lang.String.class, java.lang.String.class, java.lang.String.class
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -540,7 +538,7 @@ public class mapa extends javax.swing.JFrame {
                         .addComponent(jLabel20, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addGap(18, 18, 18)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 351, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 430, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
@@ -575,19 +573,15 @@ public class mapa extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(panelMapa, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addContainerGap()
+                .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(panelMapa, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(394, 394, 394)
                 .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
@@ -605,66 +599,95 @@ public class mapa extends javax.swing.JFrame {
 
     private void btnCalculateAndSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCalculateAndSaveActionPerformed
     String terrainName = txtTerrainName.getText().trim();
-    
-    if (terrainName.isEmpty()) {
-        javax.swing.JOptionPane.showMessageDialog(this, 
-            "⚠️ ALERT: Please enter a terrain name first!", 
-            "Validation Error", 
-            javax.swing.JOptionPane.WARNING_MESSAGE);
-        return;
-    }
 
-    // 2. FILTER AND PROCESS CROP SELECTION
-    String selectedCrop = "";
-    String requiredDistance = "";
-
-    if (chkTomato.isSelected()) {
-        selectedCrop = "Tomato";
-        requiredDistance = "40-50cm";
-    } else if (chkCucumber.isSelected()) {
-        selectedCrop = "Cucumber";
-        requiredDistance = "25-35cm";
-    } else {
-        javax.swing.JOptionPane.showMessageDialog(this, 
-            "⚠️ ALERT: You must select a crop (Tomato or Cucumber)!", 
-            "Validation Error", 
-            javax.swing.JOptionPane.WARNING_MESSAGE);
-        return;
-    }
-
-    // 3. TELEMETRY SENSOR SIMULATION (Live Math)
-    double sensorMoisture = 30.0 + (Math.random() * 55.0);
-    sensorMoisture = Math.round(sensorMoisture * 10.0) / 10.0;
-
-    // 4. VISUAL ACTION: Pop-up report on screen
-    String summaryReport = "==================================\n"
-                         + "        CROP MAPPING & SENSOR REPORT      \n"
-                         + "==================================\n"
-                         + "• Terrain Name: " + terrainName.toUpperCase() + "\n"
-                         + "• Selected Crop: " + selectedCrop + "\n"
-                         + "• Required Distance: " + requiredDistance + "\n"
-                         + "--------------------------------------------------\n"
-                         + "📡 LIVE SENSOR TELEMETRY:\n"
-                         + "• Soil Moisture Level: " + sensorMoisture + "%\n"
-                         + "==================================\n"
-                         + "Data calculated and processed successfully!";
-
+if (terrainName.isEmpty()) {
     javax.swing.JOptionPane.showMessageDialog(this, 
-        summaryReport, 
-        "System Simulation Success", 
-        javax.swing.JOptionPane.INFORMATION_MESSAGE);
+        "⚠️ ALERT: Please enter a terrain name first!", 
+        "Validation Error", 
+        javax.swing.JOptionPane.WARNING_MESSAGE);
+    return;
+}
+
+// Valida que el mapa tenga al menos 3 puntos antes de guardar el terreno
+if (puntosDeSiembra.size() < 3) {
+    javax.swing.JOptionPane.showMessageDialog(this, 
+        "You must mark at least 3 points on the map to define the terrain!", 
+        "Incomplete Map",
+        javax.swing.JOptionPane.WARNING_MESSAGE);
+    return;
+}
+
+// 2. FILTER AND PROCESS CROP SELECTION
+String selectedCrop = "";
+String requiredDistance = "";
+
+if (chkTomato.isSelected()) {
+    selectedCrop = "Tomato";
+    requiredDistance = "40-50cm";
+} else if (chkCucumber.isSelected()) {
+    selectedCrop = "Cucumber";
+    requiredDistance = "25-35cm";
+} else {
+    javax.swing.JOptionPane.showMessageDialog(this, 
+        "⚠️ ALERT: You must select a crop (Tomato or Cucumber)!", 
+        "Validation Error", 
+        javax.swing.JOptionPane.WARNING_MESSAGE);
+    return;
+}
+
+// 3. VISUAL ACTION: Pop-up report on screen
+String summaryReport = "==================================\n"
+                     + "        CROP MAPPING REPORT       \n"
+                     + "==================================\n"
+                     + "• Terrain Name: " + terrainName.toUpperCase() + "\n"
+                     + "• Selected Crop: " + selectedCrop + "\n"
+                     + "• Required Distance: " + requiredDistance + "\n"
+                     + "==================================\n"
+                     + "Data calculated and processed successfully!";
+
+javax.swing.JOptionPane.showMessageDialog(this, 
+    summaryReport, 
+    "System Simulation Success", 
+    javax.swing.JOptionPane.INFORMATION_MESSAGE);
 
     // 5. DATABASE ASYNC LOGGING
-    String sql = "INSERT INTO crop_mapping (terrain_name, crop, minimum_distance, sensor_moisture) VALUES (?, ?, ?, ?)";        // TODO add your handling code here:
+    String sql = "INSERT INTO crop_mapping (terrain_name, crop, minimum_distance, sensor_moisture) VALUES (?, ?, ?, ?)"; 
+    // TODO add your handling code here:
+    //Lógica para actualizar la tabla dinámicamente y mostrar el mensaje de confirmación
+    javax.swing.table.DefaultTableModel model = (javax.swing.table.DefaultTableModel) jTable1.getModel();
+        
+        // Limpia los registros anteriores para que no se dupliquen
+        model.setRowCount(0);
+
+        String nameForTable = txtTerrainName.getText().trim();
+
+        // Si selecciona Jitomate, agrega su fila
+        if (chkTomato.isSelected()) {
+            model.addRow(new Object[]{"Jitomate", "45 cm", nameForTable + " (Registrado)"});
+        }
+
+        // Si selecciona Pepino, agrega su fila
+        if (chkCucumber.isSelected()) {
+            model.addRow(new Object[]{"Pepino", "30 cm", nameForTable + " (Registrado)"});
+        }
+
+        javax.swing.JOptionPane.showMessageDialog(this,
+            "Terrain " + nameForTable + " successfully registered and added to the table!",
+            "Record Saved",
+            javax.swing.JOptionPane.INFORMATION_MESSAGE);
     }//GEN-LAST:event_btnCalculateAndSaveActionPerformed
-
+//Borra los puntos del mapa, reinicia los cálculos a 0 y limpia el formulario de abajo
     private void btnClearMapActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClearMapActionPerformed
-        // Clears the text box using its new English name
-        txtTerrainName.setText("");
+      puntosDeSiembra.clear();
+        mapViewer.repaint();
+        actualizarCalculos();
 
-        // Unchecks both crop checkboxes using their new names
+        txtTerrainName.setText("");
         chkTomato.setSelected(false);
-        chkCucumber.setSelected(false);        // TODO add your handling code here:
+        chkCucumber.setSelected(false);
+        
+        // Vacia completamente las filas de la tabla en pantalla
+        ((javax.swing.table.DefaultTableModel) jTable1.getModel()).setRowCount(0);
     }//GEN-LAST:event_btnClearMapActionPerformed
     // Variables declaration - do not modify                     
     // End of variables declaration                   

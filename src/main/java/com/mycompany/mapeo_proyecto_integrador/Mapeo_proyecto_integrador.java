@@ -14,7 +14,7 @@ public class Mapeo_proyecto_integrador {
 
     public static void main(String[] args) {
         
-        SessionFrom registration = new SessionFrom();
+        mapa registration = new mapa();
         registration.setVisible(true);
         registration.setLocationRelativeTo(null);
     }
