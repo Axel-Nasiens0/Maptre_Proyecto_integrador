@@ -636,13 +636,11 @@ if (chkTomato.isSelected()) {
 }
 
 // 3. VISUAL ACTION: Pop-up report on screen
-String summaryReport = "==================================\n"
-                     + "        CROP MAPPING REPORT       \n"
-                     + "==================================\n"
+String summaryReport = "        CROP MAPPING REPORT       \n"
+                     + "\n"
                      + "• Terrain Name: " + terrainName.toUpperCase() + "\n"
                      + "• Selected Crop: " + selectedCrop + "\n"
                      + "• Required Distance: " + requiredDistance + "\n"
-                     + "==================================\n"
                      + "Data calculated and processed successfully!";
 
 javax.swing.JOptionPane.showMessageDialog(this, 
