@@ -28,7 +28,6 @@ import org.jxmapviewer.viewer.Waypoint;
 import org.jxmapviewer.painter.Painter;
 import org.jxmapviewer.painter.CompoundPainter;
 import java.util.List;
-import javax.swing.JPanel;
 
 /**
  *
@@ -46,7 +45,7 @@ public class mapa extends javax.swing.JFrame {
 
     public mapa() {
         initComponents(); // Primero inicializamos lo que viene del diseñador
-
+        
         jButton5.setContentAreaFilled(true); 
         jButton5.setBorderPainted(false);     
         jButton5.setFocusPainted(false);
@@ -74,7 +73,7 @@ public class mapa extends javax.swing.JFrame {
         this.setTitle("Sistema de Mapeo de Terrenos");
         this.setSize(1000, 600);
 
-        // 1. Mantenemos tu Layout principal intacto
+        // 1. Aseguramos el layout del contenedor principal
         this.setLayout(new BorderLayout());
 
         // 2. Mantenemos las dimensiones fijas del panel lateral
@@ -385,6 +384,7 @@ public class mapa extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setIconImages(null);
         setLocation(new java.awt.Point(250, 75));
+        setUndecorated(true);
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
 
