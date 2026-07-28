@@ -160,7 +160,7 @@ public class SessionFrom extends javax.swing.JFrame {
     }//GEN-LAST:event_gooutActionPerformed
 
     private void mailActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mailActionPerformed
-        // TODO add your handling code here:
+        // Uso de enter para pasar al siguiente elemento
         password.requestFocusInWindow();
     }//GEN-LAST:event_mailActionPerformed
 
