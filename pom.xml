@@ -39,4 +39,5 @@
             <version>3.5.4</version>
         </dependency>
     </dependencies>
+    <name>mapping_integrating_project</name>
 </project>

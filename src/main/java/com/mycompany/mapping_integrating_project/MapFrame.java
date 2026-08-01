@@ -2,54 +2,64 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
-package com.mycompany.mapeo_proyecto_integrador;
+package com.mycompany.mapping_integrating_project;
 
-import java.awt.BasicStroke;
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Graphics2D;
-import java.awt.Rectangle;
-import java.awt.RenderingHints;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.geom.Path2D;
-import java.awt.geom.Point2D;
-import java.util.ArrayList;
-import javax.swing.JComponent;
 import org.jxmapviewer.JXMapViewer;
 import org.jxmapviewer.input.PanMouseInputListener;
 import org.jxmapviewer.input.ZoomMouseWheelListenerCursor;
 import org.jxmapviewer.viewer.DefaultTileFactory;
+import org.jxmapviewer.viewer.DefaultWaypoint;
 import org.jxmapviewer.viewer.GeoPosition;
 import org.jxmapviewer.viewer.TileFactoryInfo;
-import org.jxmapviewer.viewer.DefaultWaypoint;
 import org.jxmapviewer.viewer.Waypoint;
-import org.jxmapviewer.painter.Painter;
 import org.jxmapviewer.painter.CompoundPainter;
+import org.jxmapviewer.painter.Painter;
+
+import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.geom.Path2D;
+import java.awt.geom.Point2D;
+import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
+import javax.swing.*;
 
 /**
  *
  * @author Umadc
  */
-public class mapa extends javax.swing.JFrame {
 
-    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(mapa.class.getName());
+public class MapFrame extends javax.swing.JFrame {
+
+    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(MapFrame.class.getName());
     
-    // Lista para almacenar los puntos de siembra manteniendo su orden (A, B, C...)
-    private List<Waypoint> puntosDeSiembra; 
+    private List<Waypoint> plantingPoints; 
     private JXMapViewer mapViewer;
-    private Waypoint puntoArrastrado = null; // Variable para gestionar qué punto se está moviendo
-    private PanMouseInputListener panListener; // Listener para poder mover (panear) el mapa
+    private Waypoint draggedPoint = null; 
+    private PanMouseInputListener panListener;
 
-    public mapa() {
-        initComponents(); // Primero inicializamos lo que viene del diseñador
-        
+    // CardLayout Container Components
+    private CardLayout containerLayout;
+    private JPanel imageViewPanel;
+    private JLabel imageViewerLabel;
+    private JButton btnReturnToMap;
+    
+    private InteractiveImagePanel interactiveImagePanel;
+
+    // Default Constructor
+    public MapFrame() {
+        this(null);
+    }
+
+    // Main Constructor with optional initial image
+    public MapFrame(String initialImageName) {
+        initComponents();
+
         jButton5.setContentAreaFilled(true); 
         jButton5.setBorderPainted(false);     
         jButton5.setFocusPainted(false);
-        
+
         jButton1.setContentAreaFilled(true); 
         jButton1.setBorderPainted(false);     
         jButton1.setFocusPainted(false);
@@ -57,11 +67,11 @@ public class mapa extends javax.swing.JFrame {
         jButton2.setContentAreaFilled(true); 
         jButton2.setBorderPainted(false);     
         jButton2.setFocusPainted(false);
-        
+
         jButton3.setContentAreaFilled(true); 
         jButton3.setBorderPainted(false);     
         jButton3.setFocusPainted(false);
-        
+
         jButton2.putClientProperty("FlatLaf.style", ""
                 + "background: #330000;"
                 + "foreground: #FFFFFF;"
@@ -69,74 +79,146 @@ public class mapa extends javax.swing.JFrame {
                 + "focusWidth: 0;"
                 + "arc: 999;");
 
-        // Configuraciones básicas de la ventana
-        this.setTitle("Sistema de Mapeo de Terrenos");
-        this.setSize(1000, 600);
+        // Open university photo menu when clicking label
+        jLabel1.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        jLabel1.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                UniversityViews imageMenu = new UniversityViews();
+                imageMenu.setVisible(true);
+                MapFrame.this.dispose();
+            }
+        });
 
-        // 1. Aseguramos el layout del contenedor principal
+        this.setTitle("Land Mapping System");
+        this.setSize(1000, 600);
         this.setLayout(new BorderLayout());
 
-        // 2. Mantenemos las dimensiones fijas del panel lateral
         jPanel1.setPreferredSize(new Dimension(300, 0));
         jPanel1.setMinimumSize(new Dimension(300, 0));
         jPanel1.setMaximumSize(new Dimension(300, Integer.MAX_VALUE));
-
-        // Ocultamos el panel al inicio
         jPanel1.setVisible(false);        
-        
-        // Le asignas un GridLayout de 1 fila y 3 columnas
-        jPanel5.setLayout(new java.awt.GridLayout(1, 3, 10, 0)); // 10px de espacio horizontal opcional
 
-        // Mantenemos la altura fija de la barra inferior
+        jPanel5.setLayout(new java.awt.GridLayout(1, 3, 10, 0));
         jPanel5.setPreferredSize(new Dimension(this.getWidth(), 50)); 
 
-        // 3. Añadimos los paneles manteniendo el layout actual
-        this.add(panelMapa, BorderLayout.CENTER); 
+        this.add(mapPanel, BorderLayout.CENTER); 
         this.add(jPanel1, BorderLayout.EAST);     
         this.add(jPanel5, BorderLayout.SOUTH);    
 
         JComponent glass = (JComponent) this.getGlassPane();
         glass.setLayout(null); 
-
-        // 2. Sacamos el jButton2 de donde esté y lo metemos en la capa suprema
         glass.add(jButton2);
-
-        // 3. Lo posicionamos exactamente en la esquina superior izquierda
         jButton2.setBounds(20, 20, 90, 35); 
-        
-        // 4. Activamos la capa para que sea visible por encima del mapa
         glass.setVisible(true);
 
-        inicializarMapa();
+        initializeMap();
+        setupContainerWithImage();
 
-        // 4. Forzamos la actualización de la interfaz
+        if (initialImageName != null && !initialImageName.isEmpty()) {
+            showImage(initialImageName);
+        } else {
+            showMap();
+        }
+
         this.revalidate();
         this.repaint();
     }
 
-    private void inicializarMapa() {
+    private void setupContainerWithImage() {
+        containerLayout = new CardLayout();
+        mapPanel.setLayout(containerLayout);
+
+        // Custom Interactive Panel instead of a basic JLabel
+        interactiveImagePanel = new InteractiveImagePanel(this);
+
+        // Return to Map button
+        btnReturnToMap = new JButton("Return to Map");
+        btnReturnToMap.setFont(new Font("SansSerif", Font.BOLD, 12));
+        btnReturnToMap.setBackground(new Color(231, 76, 60));
+        btnReturnToMap.setForeground(Color.WHITE);
+        btnReturnToMap.setFocusPainted(false);
+        btnReturnToMap.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        btnReturnToMap.addActionListener(e -> showMap());
+
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 15, 10));
+        buttonPanel.setOpaque(false);
+        buttonPanel.add(btnReturnToMap);
+
+        JPanel imageContainer = new JPanel(new BorderLayout());
+        imageContainer.add(buttonPanel, BorderLayout.NORTH);
+        imageContainer.add(interactiveImagePanel, BorderLayout.CENTER);
+
+        // Register views
+        mapPanel.add(mapViewer, "MAP_VIEW");
+        mapPanel.add(imageContainer, "IMAGE_VIEW");
+    }
+
+    public void showImage(String imageName) {
+        ImageIcon icon = loadImageIcon(imageName);
+        if (icon != null) {
+            interactiveImagePanel.setImage(icon.getImage());
+        }
+        containerLayout.show(mapPanel, "IMAGE_VIEW");
+    }
+
+    public void showMap() {
+        containerLayout.show(mapPanel, "MAP_VIEW");
+    }
+
+    private ImageIcon loadImageIcon(String fileName) {
+        java.net.URL resource = getClass().getResource("/images/" + fileName);
+        if (resource != null) return new ImageIcon(resource);
+
+        resource = getClass().getResource("/" + fileName);
+        if (resource != null) return new ImageIcon(resource);
+
+        File projectDir = new File(System.getProperty("user.dir"));
+        File foundFile = searchFileRecursive(projectDir, fileName);
+
+        if (foundFile != null && foundFile.exists()) {
+            return new ImageIcon(foundFile.getAbsolutePath());
+        }
+        return null;
+    }
+
+    private File searchFileRecursive(File directory, String fileName) {
+        if (directory != null && directory.isDirectory()) {
+            File[] files = directory.listFiles();
+            if (files != null) {
+                for (File file : files) {
+                    if (file.isDirectory()) {
+                        File result = searchFileRecursive(file, fileName);
+                        if (result != null) return result;
+                    } else if (file.getName().equalsIgnoreCase(fileName)) {
+                        return file;
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    private void initializeMap() {
         mapViewer = new JXMapViewer();
 
-        // Configuración de la fuente de imágenes satelitales (Esri)
         TileFactoryInfo info = new TileFactoryInfo(1, 19, 19, 256, true, true, 
             "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile", "x", "y", "z") {
             @Override
             public String getTileUrl(int x, int y, int zoom) {
-                int z = 19 - zoom; // Ajuste para el límite de zoom definido
+                int z = 19 - zoom;
                 return this.baseURL + "/" + z + "/" + y + "/" + x;
             }
         };
 
         mapViewer.setTileFactory(new DefaultTileFactory(info));
-        mapViewer.setAddressLocation(new GeoPosition(21.814398, -102.771391)); // Punto inicial
-        mapViewer.setZoom(2); // Nivel de zoom inicial
+        mapViewer.setAddressLocation(new GeoPosition(21.814398, -102.771391));
+        mapViewer.setZoom(2);
 
-        // Usamos ArrayList para mantener el orden de los vértices
-        puntosDeSiembra = new ArrayList<>();
+        plantingPoints = new ArrayList<>();
 
-        // Pintor 1: Dibuja el polígono verde que une los puntos
         Painter<JXMapViewer> areaPainter = (g, map, w, h) -> {
-            if (puntosDeSiembra.size() < 2) return;
+            if (plantingPoints.size() < 2) return;
             g = (Graphics2D) g.create();
             g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
             Rectangle rect = map.getViewportBounds();
@@ -144,30 +226,29 @@ public class mapa extends javax.swing.JFrame {
             
             Path2D.Double path = new Path2D.Double();
             boolean first = true;
-            for (Waypoint wp : puntosDeSiembra) {
+            for (Waypoint wp : plantingPoints) {
                 Point2D pt = map.getTileFactory().geoToPixel(wp.getPosition(), map.getZoom());
                 if (first) { path.moveTo(pt.getX(), pt.getY()); first = false; }
                 else { path.lineTo(pt.getX(), pt.getY()); }
             }
             path.closePath();
-            g.setColor(new Color(46, 204, 113, 80)); // Relleno verde semitransparente
+            g.setColor(new Color(46, 204, 113, 80));
             g.fill(path);
-            g.setColor(new Color(39, 174, 96, 220)); // Borde del polígono
+            g.setColor(new Color(39, 174, 96, 220));
             g.setStroke(new BasicStroke(2.5f));
             g.draw(path);
             g.dispose();
         };
 
-        // Pintor 2: Dibuja los círculos azules y sus etiquetas (A, B, C...)
         Painter<JXMapViewer> nodePainter = (g, map, w, h) -> {
             g = (Graphics2D) g.create();
             g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
             Rectangle rect = map.getViewportBounds();
             g.translate(-rect.x, -rect.y);
             int idx = 0;
-            for (Waypoint wp : puntosDeSiembra) {
+            for (Waypoint wp : plantingPoints) {
                 Point2D pt = map.getTileFactory().geoToPixel(wp.getPosition(), map.getZoom());
-                g.setColor(new Color(41, 128, 185)); // Color del nodo
+                g.setColor(new Color(41, 128, 185));
                 g.fillOval((int)pt.getX() - 8, (int)pt.getY() - 8, 16, 16);
                 g.setColor(Color.WHITE);
                 g.drawString(String.valueOf((char)('A' + (idx++ % 26))), (int)pt.getX() + 12, (int)pt.getY() + 5);
@@ -175,23 +256,20 @@ public class mapa extends javax.swing.JFrame {
             g.dispose();
         };
 
-        // Combinar pintores para mostrar área y puntos simultáneamente
         mapViewer.setOverlayPainter(new CompoundPainter<>(areaPainter, nodePainter));
 
-        // Configuración de controles de navegación (Paneo y Zoom con rueda)
         panListener = new PanMouseInputListener(mapViewer);
         mapViewer.addMouseListener(panListener);
         mapViewer.addMouseMotionListener(panListener);
         mapViewer.addMouseWheelListener(new ZoomMouseWheelListenerCursor(mapViewer));
 
-        // Listener para acciones de edición de puntos
-        MouseAdapter ma = new MouseAdapter() {
+        MouseAdapter mouseAdapter = new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
                 if (e.isControlDown() && e.getButton() == MouseEvent.BUTTON1) {
                     GeoPosition pos = mapViewer.convertPointToGeoPosition(e.getPoint());
-                    puntoArrastrado = encontrarPuntoCercano(pos);
-                    if (puntoArrastrado != null) {
+                    draggedPoint = findNearbyPoint(pos);
+                    if (draggedPoint != null) {
                         mapViewer.removeMouseListener(panListener);
                         mapViewer.removeMouseMotionListener(panListener);
                     }
@@ -200,38 +278,38 @@ public class mapa extends javax.swing.JFrame {
 
             @Override
             public void mouseDragged(MouseEvent e) {
-                if (puntoArrastrado != null) {
-                    int index = puntosDeSiembra.indexOf(puntoArrastrado);
-                    puntoArrastrado = new DefaultWaypoint(mapViewer.convertPointToGeoPosition(e.getPoint()));
-                    puntosDeSiembra.set(index, puntoArrastrado);
+                if (draggedPoint != null) {
+                    int index = plantingPoints.indexOf(draggedPoint);
+                    draggedPoint = new DefaultWaypoint(mapViewer.convertPointToGeoPosition(e.getPoint()));
+                    plantingPoints.set(index, draggedPoint);
                     mapViewer.repaint();
-                    actualizarCalculos();
+                    updateCalculations();
                 }
             }
 
             @Override
             public void mouseReleased(MouseEvent e) {
-                if (puntoArrastrado != null) {
+                if (draggedPoint != null) {
                     mapViewer.addMouseListener(panListener);
                     mapViewer.addMouseMotionListener(panListener);
-                    actualizarClimaApi(puntoArrastrado.getPosition()); // Llamada directa simplificada
-                    puntoArrastrado = null;
+                    updateWeatherApi(draggedPoint.getPosition());
+                    draggedPoint = null;
                 }
             }
 
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (e.getClickCount() == 2 && e.getButton() == MouseEvent.BUTTON1) {
-                    puntosDeSiembra.add(new DefaultWaypoint(mapViewer.convertPointToGeoPosition(e.getPoint())));
-                    if (!puntosDeSiembra.isEmpty()) { 
-                        actualizarClimaApi(puntosDeSiembra.get(puntosDeSiembra.size() - 1).getPosition()); 
+                    plantingPoints.add(new DefaultWaypoint(mapViewer.convertPointToGeoPosition(e.getPoint())));
+                    if (!plantingPoints.isEmpty()) { 
+                        updateWeatherApi(plantingPoints.get(plantingPoints.size() - 1).getPosition()); 
                     }
                 } 
                 else if (e.getButton() == MouseEvent.BUTTON3) {
-                    if (!puntosDeSiembra.isEmpty()) {
-                        puntosDeSiembra.remove(puntosDeSiembra.size() - 1);
-                        if (!puntosDeSiembra.isEmpty()) { 
-                            actualizarClimaApi(puntosDeSiembra.get(puntosDeSiembra.size() - 1).getPosition()); 
+                    if (!plantingPoints.isEmpty()) {
+                        plantingPoints.remove(plantingPoints.size() - 1);
+                        if (!plantingPoints.isEmpty()) { 
+                            updateWeatherApi(plantingPoints.get(plantingPoints.size() - 1).getPosition()); 
                         } else { 
                             jLabel5.setText("--"); 
                             jLabel3.setText("--"); 
@@ -242,79 +320,65 @@ public class mapa extends javax.swing.JFrame {
                     }
                 } 
                 else if (e.getButton() == MouseEvent.BUTTON2) {
-                    puntosDeSiembra.clear();
+                    plantingPoints.clear();
                     jLabel5.setText("--"); 
                     jLabel3.setText("--"); 
                 }
                 mapViewer.repaint();
-                actualizarCalculos();
+                updateCalculations();
             }
         };
 
-        mapViewer.addMouseListener(ma);
-        mapViewer.addMouseMotionListener(ma);
-
-        panelMapa.setLayout(new BorderLayout());
-        panelMapa.add(mapViewer, BorderLayout.CENTER);
+        mapViewer.addMouseListener(mouseAdapter);
+        mapViewer.addMouseMotionListener(mouseAdapter);
     }
 
-    private void actualizarCalculos() {
-        // Si no hay suficientes puntos, reiniciamos las etiquetas
-        if (puntosDeSiembra.size() < 2) {
-            jLabel8.setText("0.0");  // Área
-            jLabel13.setText("0.0"); // Perímetro
+    private void updateCalculations() {
+        if (plantingPoints.size() < 2) {
+            jLabel8.setText("0.0");
+            jLabel13.setText("0.0");
             return;
         }
 
-        int n = puntosDeSiembra.size();
+        int n = plantingPoints.size();
         double[] lats = new double[n];
         double[] lons = new double[n];
 
         for (int i = 0; i < n; i++) {
-            GeoPosition pos = puntosDeSiembra.get(i).getPosition();
+            GeoPosition pos = plantingPoints.get(i).getPosition();
             lats[i] = pos.getLatitude();
             lons[i] = pos.getLongitude();
         }
 
-        // 1. CÁLCULO DEL ÁREA
-        calculo calc = new calculo("Terreno Actual", lats, lons);
-        double area = calc.calcularAreaIntegral();
+        Calculation calc = new Calculation("Current Land", lats, lons);
+        double area = calc.calculateIntegralArea();
         jLabel8.setText(String.format(java.util.Locale.US, "%.2f", area));
 
-        // 2. CÁLCULO DEL PERÍMETRO (Nueva lógica)
-        double perimetroMeters = 0.0;
-        double metrosPorGrado = 111320.0;
+        double perimeterMeters = 0.0;
+        double metersPerDegree = 111320.0;
 
         for (int i = 0; i < n; i++) {
-            int sig = (i + 1) % n; // Siguiente punto (vuelve al primero al final)
-
-            // Diferencia en grados
-            double dLat = lats[sig] - lats[i];
-            double dLon = lons[sig] - lons[i];
-
-            // Conversión aproximada a metros (Teorema de Pitágoras plano)
-            double metrosLat = dLat * metrosPorGrado;
-            double metrosLon = dLon * metrosPorGrado;
-
-            perimetroMeters += Math.sqrt((metrosLat * metrosLat) + (metrosLon * metrosLon));
+            int next = (i + 1) % n;
+            double dLat = lats[next] - lats[i];
+            double dLon = lons[next] - lons[i];
+            double metersLat = dLat * metersPerDegree;
+            double metersLon = dLon * metersPerDegree;
+            perimeterMeters += Math.sqrt((metersLat * metersLat) + (metersLon * metersLon));
         }
 
-        // Mostrar el perímetro en jLabel13 con 2 decimales
-        jLabel13.setText(String.format(java.util.Locale.US, "%.2f", perimetroMeters));
+        jLabel13.setText(String.format(java.util.Locale.US, "%.2f", perimeterMeters));
     }
-    
-    // Método auxiliar para detectar si hicimos clic sobre un punto existente
-    private Waypoint encontrarPuntoCercano(GeoPosition pos) {
-        for (Waypoint wp : puntosDeSiembra) {
+
+    private Waypoint findNearbyPoint(GeoPosition pos) {
+        for (Waypoint wp : plantingPoints) {
             Point2D p1 = mapViewer.getTileFactory().geoToPixel(pos, mapViewer.getZoom());
             Point2D p2 = mapViewer.getTileFactory().geoToPixel(wp.getPosition(), mapViewer.getZoom());
             if (p1.distance(p2) < 20) return wp;
         }
         return null;
     }
-    
- 
-    public void actualizarClimaApi(GeoPosition pos) {
+
+    public void updateWeatherApi(GeoPosition pos) {
         if (pos == null) return;
         jLabel5.setText("...");
         jLabel3.setText("...");
@@ -333,7 +397,6 @@ public class mapa extends javax.swing.JFrame {
                     while ((line = br.readLine()) != null) { sb.append(line); }
                     br.close(); conn.disconnect();
                     
-                  
                     org.json.JSONObject json = new org.json.JSONObject(sb.toString());
                     org.json.JSONObject current = json.getJSONObject("current");
                     final double temp = current.getDouble("temperature_2m");
@@ -352,17 +415,20 @@ public class mapa extends javax.swing.JFrame {
         }).start();
     }
     
-    /**
-     * This method is called from within the constructor to initialize the form.
-     * WARNING: Do NOT modify this code. The content of this method is always
-     * regenerated by the Form Editor.
-     */
+    public void updateImageMetrics(double areaM2, double perimeterM) {
+        if (jLabel8 != null) {
+            jLabel8.setText(String.format(java.util.Locale.US, "%.1f", areaM2));
+        }
+        if (jLabel13 != null) {
+            jLabel13.setText(String.format(java.util.Locale.US, "%.1f", perimeterM));
+        }
+    }
     
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        panelMapa = new javax.swing.JPanel();
+        mapPanel = new javax.swing.JPanel();
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
@@ -556,8 +622,11 @@ public class mapa extends javax.swing.JFrame {
 
         jButton1.setBackground(new java.awt.Color(255, 255, 255));
         jButton1.setForeground(new java.awt.Color(170, 114, 41));
-        jButton1.setText("Opciones de guardado");
+        jButton1.setText("Origen (UTC)");
         jButton1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButton1MouseClicked1(evt);
+            }
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 jButton1MouseEntered(evt);
             }
@@ -586,9 +655,9 @@ public class mapa extends javax.swing.JFrame {
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addGap(33, 33, 33)
                 .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(123, 123, 123)
-                .addComponent(jButton1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jButton1)
+                .addGap(151, 151, 151)
                 .addComponent(jButton3)
                 .addGap(44, 44, 44))
         );
@@ -618,23 +687,23 @@ public class mapa extends javax.swing.JFrame {
             }
         });
 
-        javax.swing.GroupLayout panelMapaLayout = new javax.swing.GroupLayout(panelMapa);
-        panelMapa.setLayout(panelMapaLayout);
-        panelMapaLayout.setHorizontalGroup(
-            panelMapaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelMapaLayout.createSequentialGroup()
+        javax.swing.GroupLayout mapPanelLayout = new javax.swing.GroupLayout(mapPanel);
+        mapPanel.setLayout(mapPanelLayout);
+        mapPanelLayout.setHorizontalGroup(
+            mapPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, mapPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jButton2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 433, Short.MAX_VALUE)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 177, javax.swing.GroupLayout.PREFERRED_SIZE))
             .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
-        panelMapaLayout.setVerticalGroup(
-            panelMapaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(panelMapaLayout.createSequentialGroup()
-                .addGroup(panelMapaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        mapPanelLayout.setVerticalGroup(
+            mapPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(mapPanelLayout.createSequentialGroup()
+                .addGroup(mapPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(panelMapaLayout.createSequentialGroup()
+                    .addGroup(mapPanelLayout.createSequentialGroup()
                         .addGap(18, 18, 18)
                         .addComponent(jButton2)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -647,12 +716,12 @@ public class mapa extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(panelMapa, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(mapPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(panelMapa, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(mapPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
 
         pack();
@@ -671,11 +740,11 @@ public class mapa extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton2MouseExited
 
     private void jButton1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton1MouseClicked
-        // Invertimos el estado de visibilidad actual del panel
-        boolean estadoActual = jPanel1.isVisible();
-        jPanel1.setVisible(!estadoActual);
+        // Invert the current visibility state of the panel
+        boolean currentState = jPanel1.isVisible();
+        jPanel1.setVisible(!currentState);
 
-        // CRUCIAL: Le avisamos al layout que el espacio en pantalla cambió
+        // CRUCIAL: Notify the layout that the screen space has changed
         this.revalidate();
         this.repaint();
     }//GEN-LAST:event_jButton1MouseClicked
@@ -719,6 +788,15 @@ public class mapa extends javax.swing.JFrame {
         this.dispose();
     }//GEN-LAST:event_jButton2MouseClicked
 
+    private void jButton1MouseClicked1(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton1MouseClicked1
+       // Open the UniversityViews window asynchronously on the Event Dispatch Thread
+        java.awt.EventQueue.invokeLater(() -> {
+            new UniversityViews().setVisible(true);
+        });
+
+        // Close the current window to free up system resources
+        this.dispose();
+    }//GEN-LAST:event_jButton1MouseClicked1
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
@@ -743,6 +821,6 @@ public class mapa extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel5;
-    private javax.swing.JPanel panelMapa;
+    private javax.swing.JPanel mapPanel;
     // End of variables declaration//GEN-END:variables
 }

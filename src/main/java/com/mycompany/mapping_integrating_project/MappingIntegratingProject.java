@@ -2,22 +2,22 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  */
 
-package com.mycompany.mapeo_proyecto_integrador;
+package com.mycompany.mapping_integrating_project;
 
-import com.formdev.flatlaf.FlatDarkLaf; // O FlatLightLaf
+import com.formdev.flatlaf.FlatDarkLaf; // Or FlatLightLaf
 
 /**
  *
  * @author axelr
  */
-public class Mapeo_proyecto_integrador {
+public class MappingIntegratingProject {
 
     public static void main(String[] args) {
         
-        FlatDarkLaf.setup(); // <--- IMPORTANTE: Activa FlatLaf
+        FlatDarkLaf.setup();
     
         java.awt.EventQueue.invokeLater(() -> {
-            new mapa().setVisible(true);
+            new SessionFrom().setVisible(true);
         });
     }
 }
