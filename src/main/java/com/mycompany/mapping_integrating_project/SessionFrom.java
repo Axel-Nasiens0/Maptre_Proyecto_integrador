@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
-package com.mycompany.mapeo_proyecto_integrador;
+package com.mycompany.mapping_integrating_project;
 
 import javax.swing.SwingUtilities;
 
@@ -39,7 +39,7 @@ public class SessionFrom extends javax.swing.JFrame {
         jLabel4 = new javax.swing.JLabel();
         create = new javax.swing.JButton();
         goout = new javax.swing.JButton();
-        jLabelRounded1 = new com.mycompany.mapeo_proyecto_integrador.JLabelRounded();
+        jLabelRounded1 = new com.mycompany.mapping_integrating_project.JLabelRounded();
         fondo = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -55,6 +55,7 @@ public class SessionFrom extends javax.swing.JFrame {
 
         jLabel2.setBackground(new java.awt.Color(204, 204, 204));
         jLabel2.setFont(new java.awt.Font("Segoe UI Emoji", 0, 12)); // NOI18N
+        jLabel2.setForeground(new java.awt.Color(0, 0, 0));
         jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         jLabel2.setText("  Correo :");
         jLabel2.setOpaque(true);
@@ -62,6 +63,7 @@ public class SessionFrom extends javax.swing.JFrame {
 
         jLabel3.setBackground(new java.awt.Color(204, 204, 204));
         jLabel3.setFont(new java.awt.Font("Segoe UI Emoji", 0, 12)); // NOI18N
+        jLabel3.setForeground(new java.awt.Color(0, 0, 0));
         jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         jLabel3.setText("  Contraseña :");
         jLabel3.setOpaque(true);
@@ -69,12 +71,14 @@ public class SessionFrom extends javax.swing.JFrame {
 
         mail.setBackground(new java.awt.Color(204, 204, 204));
         mail.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        mail.setForeground(new java.awt.Color(102, 102, 102));
         mail.setBorder(null);
         mail.addActionListener(this::mailActionPerformed);
         getContentPane().add(mail, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 200, 190, 30));
 
         password.setBackground(new java.awt.Color(204, 204, 204));
         password.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        password.setForeground(new java.awt.Color(102, 102, 102));
         password.setBorder(null);
         password.setOpaque(true);
         password.addActionListener(this::passwordActionPerformed);
@@ -91,6 +95,7 @@ public class SessionFrom extends javax.swing.JFrame {
         jLabel4.setToolTipText("");
         getContentPane().add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 420, 150, 20));
 
+        create.setBackground(new java.awt.Color(255, 255, 255));
         create.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         create.setForeground(new java.awt.Color(110, 125, 78));
         create.setText("Crear Cuenta");
@@ -118,39 +123,39 @@ public class SessionFrom extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void getActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_getActionPerformed
-       String cor = mail.getText().trim();
-    String con = new String(password.getPassword()).trim();
+        String emailText = mail.getText().trim();
+        String passwordText = new String(password.getPassword()).trim();
 
-    if (cor.isEmpty() && con.isEmpty()){
-        javax.swing.JOptionPane.showMessageDialog(this, "Los campos están vacíos", "Error de entrada", 0);
-        return;
-    }
-    if (cor.isEmpty()){
-        javax.swing.JOptionPane.showMessageDialog(this, "El campo Correo está vacío", "Error de entrada", 2);
-        return;
-    }
-    if (con.isEmpty()){
-        javax.swing.JOptionPane.showMessageDialog(this, "El campo Contraseña está vacío", "Error de entrada", 2);
-        return;
-    }
+        if (emailText.isEmpty() && passwordText.isEmpty()) {
+            javax.swing.JOptionPane.showMessageDialog(this, "The fields are empty", "Input Error", 0);
+            return;
+        }
+        if (emailText.isEmpty()) {
+            javax.swing.JOptionPane.showMessageDialog(this, "The Email field is empty", "Input Error", 2);
+            return;
+        }
+        if (passwordText.isEmpty()) {
+            javax.swing.JOptionPane.showMessageDialog(this, "The Password field is empty", "Input Error", 2);
+            return;
+        }
 
-    if (Query.validarLogin(cor, con)) {
-        javax.swing.JOptionPane.showMessageDialog(this, "¡Bienvenido al sistema!");
-        this.dispose();
-        SwingUtilities.invokeLater(() -> {
-        new mapa().setVisible(true);
-        });
-    } else {
-        javax.swing.JOptionPane.showMessageDialog(this, "Correo o contraseña incorrectos", "Error", 0);
-        password.setText("");
-    }
+        if (Query.validateLogin(emailText, passwordText)) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Welcome to the system!");
+            this.dispose();
+            SwingUtilities.invokeLater(() -> {
+                new MapFrame().setVisible(true);
+            });
+        } else {
+            javax.swing.JOptionPane.showMessageDialog(this, "Incorrect email or password", "Error", 0);
+            password.setText("");
+        }
     }//GEN-LAST:event_getActionPerformed
 
     private void createActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_createActionPerformed
         // TODO add your handling code here:
-        LoginFrom registro = new LoginFrom();
-        registro.setLocationRelativeTo(null);
-        registro.setVisible(true);
+        LoginFrom registration = new LoginFrom();
+        registration.setLocationRelativeTo(null);
+        registration.setVisible(true);
         this.dispose();
     }//GEN-LAST:event_createActionPerformed
 
@@ -160,7 +165,7 @@ public class SessionFrom extends javax.swing.JFrame {
     }//GEN-LAST:event_gooutActionPerformed
 
     private void mailActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mailActionPerformed
-        // TODO add your handling code here:
+        // Pressing Enter moves focus to the next element
         password.requestFocusInWindow();
     }//GEN-LAST:event_mailActionPerformed
 
@@ -168,11 +173,6 @@ public class SessionFrom extends javax.swing.JFrame {
         // TODO add your handling code here:
         get.doClick();
     }//GEN-LAST:event_passwordActionPerformed
-
-    /**
-     * @param args the command line arguments
-     */
-    
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton create;
@@ -183,7 +183,7 @@ public class SessionFrom extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
-    private com.mycompany.mapeo_proyecto_integrador.JLabelRounded jLabelRounded1;
+    private com.mycompany.mapping_integrating_project.JLabelRounded jLabelRounded1;
     private javax.swing.JTextField mail;
     private javax.swing.JPasswordField password;
     // End of variables declaration//GEN-END:variables
