@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
-package com.mycompany.mapping_integrating_project;
+package com.mycompany.mapeo_proyecto_integrador;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
@@ -42,7 +42,7 @@ public class LoginFrom extends javax.swing.JFrame {
         jLabel5 = new javax.swing.JLabel();
         password = new javax.swing.JTextField();
         register = new javax.swing.JButton();
-        jLabelRounded1 = new com.mycompany.mapping_integrating_project.JLabelRounded();
+        jLabelRounded1 = new com.mycompany.mapeo_proyecto_integrador.JLabelRounded();
         jLabel6 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -66,21 +66,18 @@ public class LoginFrom extends javax.swing.JFrame {
 
         name.setBackground(new java.awt.Color(204, 204, 204));
         name.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        name.setForeground(new java.awt.Color(102, 102, 102));
         name.setBorder(null);
         name.addActionListener(this::nameActionPerformed);
         getContentPane().add(name, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 190, 200, 30));
 
         mail.setBackground(new java.awt.Color(204, 204, 204));
         mail.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        mail.setForeground(new java.awt.Color(102, 102, 102));
         mail.setBorder(null);
         mail.addActionListener(this::mailActionPerformed);
         getContentPane().add(mail, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 230, 210, 30));
 
         jLabel2.setBackground(new java.awt.Color(204, 204, 204));
         jLabel2.setFont(new java.awt.Font("Segoe UI Emoji", 0, 12)); // NOI18N
-        jLabel2.setForeground(new java.awt.Color(0, 0, 0));
         jLabel2.setText("  Nombre :");
         jLabel2.setMaximumSize(new java.awt.Dimension(48, 14));
         jLabel2.setMinimumSize(new java.awt.Dimension(48, 14));
@@ -90,21 +87,18 @@ public class LoginFrom extends javax.swing.JFrame {
 
         jLabel3.setBackground(new java.awt.Color(204, 204, 204));
         jLabel3.setFont(new java.awt.Font("Segoe UI Emoji", 0, 12)); // NOI18N
-        jLabel3.setForeground(new java.awt.Color(0, 0, 0));
         jLabel3.setText("  Correo : ");
         jLabel3.setOpaque(true);
         getContentPane().add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 230, 60, 30));
 
         jLabel4.setBackground(new java.awt.Color(204, 204, 204));
         jLabel4.setFont(new java.awt.Font("Segoe UI Emoji", 0, 12)); // NOI18N
-        jLabel4.setForeground(new java.awt.Color(0, 0, 0));
         jLabel4.setText("  Contraseña :");
         jLabel4.setOpaque(true);
         getContentPane().add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 310, 80, 30));
 
         role.setBackground(new java.awt.Color(204, 204, 204));
         role.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        role.setForeground(new java.awt.Color(102, 102, 102));
         role.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "  ", "Usuario", "Administrativo", "Analista", "Operador" }));
         role.setBorder(null);
         role.setOpaque(true);
@@ -113,14 +107,12 @@ public class LoginFrom extends javax.swing.JFrame {
 
         jLabel5.setBackground(new java.awt.Color(204, 204, 204));
         jLabel5.setFont(new java.awt.Font("Segoe UI Emoji", 0, 12)); // NOI18N
-        jLabel5.setForeground(new java.awt.Color(0, 0, 0));
         jLabel5.setText("  Rol :");
         jLabel5.setOpaque(true);
         getContentPane().add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 270, 40, 30));
 
         password.setBackground(new java.awt.Color(204, 204, 204));
         password.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        password.setForeground(new java.awt.Color(102, 102, 102));
         password.setBorder(null);
         password.addActionListener(this::passwordActionPerformed);
         getContentPane().add(password, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 310, 190, 30));
@@ -168,48 +160,53 @@ public class LoginFrom extends javax.swing.JFrame {
     }//GEN-LAST:event_roleActionPerformed
 
     private void registerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_registerActionPerformed
-    String nameText = name.getText().trim();
-    String emailText = mail.getText().trim();
-    String passwordText = password.getText().trim();
 
-    if (nameText.isEmpty() && emailText.isEmpty() && passwordText.isEmpty()) {
-        javax.swing.JOptionPane.showMessageDialog(this, "The fields are empty", "MapTre - Error", 0);
+     
+    String nom = name.getText().trim();
+    String cor = mail.getText().trim();
+    String cont = password.getText().trim();
+
+    if (nom.isEmpty() && cor.isEmpty() && cont.isEmpty()) {
+        javax.swing.JOptionPane.showMessageDialog(this, "Los campos están vacíos", "MapTre - Error", 0);
         return;
     }
-    if (nameText.isEmpty()) {
-        javax.swing.JOptionPane.showMessageDialog(this, "The Name field is empty", "MapTre - Error", 2);
+    if (nom.isEmpty()) {
+        javax.swing.JOptionPane.showMessageDialog(this, "El campo Nombre está vacío", "MapTre - Error", 2);
         return;
     }
-    if (emailText.isEmpty()) {
-        javax.swing.JOptionPane.showMessageDialog(this, "The Email field is empty", "MapTre - Error", 2);
+    if (cor.isEmpty()) {
+        javax.swing.JOptionPane.showMessageDialog(this, "El campo Correo está vacío", "MapTre - Error", 2);
         return;
     }
-    if (passwordText.isEmpty()) {
-        javax.swing.JOptionPane.showMessageDialog(this, "The Password field is empty", "MapTre - Error", 2);
+    if (cont.isEmpty()) {
+        javax.swing.JOptionPane.showMessageDialog(this, "El campo Contraseña está vacío", "MapTre - Error", 2);
         return;
     }
+    LocalDate fechaActual = LocalDate.now();
+    String fecha = fechaActual.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 
-    LocalDate currentDate = LocalDate.now();
-    String formattedDate = currentDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-
-    String selectedRole = role.getSelectedItem().toString();
-    Query.registerUser(nameText, emailText, passwordText, selectedRole, formattedDate);
-
-    javax.swing.JOptionPane.showMessageDialog(this, "           Welcome to MapTre "
-        + "\nThis is a digital mapping application, "
-        + "\nwe hope you enjoy the experience");
-
-    SessionFrom homeSession = new SessionFrom();
-    homeSession.setLocationRelativeTo(null);
-    homeSession.setVisible(true);
-
-    this.dispose();
+    String ro = role.getSelectedItem().toString();
+    Query.registrarUsuario(nom, cor, cont, ro, fecha);
+    
+    javax.swing.JOptionPane.showMessageDialog(this, "           Bienvenido a Map tre "
+        + "\nEsta es una aplicación sobre mapeo digital, "
+        + "\nesperemos disfrutes la experiencia");
+    SessionFrom inicio = new SessionFrom();
+    inicio.setLocationRelativeTo(null);
+    inicio.setVisible(true);
+        
+    this.dispose();   
     }//GEN-LAST:event_registerActionPerformed
 
     private void passwordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_passwordActionPerformed
         // TODO add your handling code here:
         register.doClick();
     }//GEN-LAST:event_passwordActionPerformed
+
+    /**
+     * @param args the command line arguments
+     */
+    
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton cancel;
@@ -219,7 +216,7 @@ public class LoginFrom extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
-    private com.mycompany.mapping_integrating_project.JLabelRounded jLabelRounded1;
+    private com.mycompany.mapeo_proyecto_integrador.JLabelRounded jLabelRounded1;
     private javax.swing.JTextField mail;
     private javax.swing.JTextField name;
     private javax.swing.JTextField password;
