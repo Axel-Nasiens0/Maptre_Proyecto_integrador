@@ -231,9 +231,7 @@ public class mapa extends javax.swing.JFrame {
         }
 
         // 1. CÁLCULO DEL ÁREA
-        calculo calc = new calculo("Terreno Actual", lats, lons);
-        double area = calc.calcularAreaIntegral();
-        jLabel8.setText(String.format(java.util.Locale.US, "%.2f", area));
+       
 
         // 2. CÁLCULO DEL PERÍMETRO (Nueva lógica)
         double perimetroMeters = 0.0;

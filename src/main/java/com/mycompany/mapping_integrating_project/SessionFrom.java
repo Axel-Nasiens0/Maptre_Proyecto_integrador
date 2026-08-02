@@ -5,6 +5,8 @@
 package com.mycompany.mapping_integrating_project;
 
 import javax.swing.SwingUtilities;
+import java.sql.ResultSet;
+
 
 /**
  *
@@ -124,22 +126,28 @@ public class SessionFrom extends javax.swing.JFrame {
 
     private void getActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_getActionPerformed
         String emailText = mail.getText().trim();
-        String passwordText = new String(password.getPassword()).trim();
+    String passwordText = new String(password.getPassword()).trim();
 
-        if (emailText.isEmpty() && passwordText.isEmpty()) {
-            javax.swing.JOptionPane.showMessageDialog(this, "The fields are empty", "Input Error", 0);
-            return;
-        }
-        if (emailText.isEmpty()) {
-            javax.swing.JOptionPane.showMessageDialog(this, "The Email field is empty", "Input Error", 2);
-            return;
-        }
-        if (passwordText.isEmpty()) {
-            javax.swing.JOptionPane.showMessageDialog(this, "The Password field is empty", "Input Error", 2);
-            return;
-        }
+    if (emailText.isEmpty() && passwordText.isEmpty()) {
+        javax.swing.JOptionPane.showMessageDialog(this, "The fields are empty", "Input Error", 0);
+        return;
+    }
+    if (emailText.isEmpty()) {
+        javax.swing.JOptionPane.showMessageDialog(this, "The Email field is empty", "Input Error", 2);
+        return;
+    }
+    if (passwordText.isEmpty()) {
+        javax.swing.JOptionPane.showMessageDialog(this, "The Password field is empty", "Input Error", 2);
+        return;
+    }
 
-        if (Query.validateLogin(emailText, passwordText)) {
+    try {
+        ResultSet rs = Query.getUserData(emailText, passwordText);
+        if (rs != null && rs.next()) {
+            Session.userId = rs.getInt("user_id");
+            Session.username = rs.getString("username");
+            Session.email = rs.getString("email");
+
             javax.swing.JOptionPane.showMessageDialog(this, "Welcome to the system!");
             this.dispose();
             SwingUtilities.invokeLater(() -> {
@@ -149,6 +157,9 @@ public class SessionFrom extends javax.swing.JFrame {
             javax.swing.JOptionPane.showMessageDialog(this, "Incorrect email or password", "Error", 0);
             password.setText("");
         }
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
     }//GEN-LAST:event_getActionPerformed
 
     private void createActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_createActionPerformed

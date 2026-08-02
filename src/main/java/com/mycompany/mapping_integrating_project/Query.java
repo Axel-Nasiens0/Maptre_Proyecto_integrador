@@ -25,7 +25,7 @@ public class Query {
             return false;
         }
 
-        String sql = "SELECT * FROM usuario WHERE correo = ? AND password = ?";
+        String sql = "SELECT * FROM users WHERE email = ? AND password = ?";
         try (PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, email);
             ps.setString(2, pass);
@@ -42,6 +42,22 @@ public class Query {
             return false;
         }
     }
+    
+    public static ResultSet getUserData(String email, String pass) {
+    Connection con = Connect.connect();
+    if (con == null) return null;
+
+    String sql = "SELECT * FROM users WHERE email = ? AND password = ?";
+    try {
+        PreparedStatement ps = con.prepareStatement(sql);
+        ps.setString(1, email);
+        ps.setString(2, pass);
+        return ps.executeQuery();
+    } catch (SQLException e) {
+        System.out.println("Error retrieving user data: " + e.getMessage());
+        return null;
+    }
+}
 
     public static void registerUser(String name, String email, String pass, String role, String date) {
         Connection con = Connect.connect();
@@ -51,7 +67,7 @@ public class Query {
             return;
         }
 
-        String sql = "INSERT INTO usuario (nombre_usuario, correo, password, rol, fecha_registro) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO users (username, email, password, role, registration_date) VALUES (?, ?, ?, ?, ?)";
         try (PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, name);
             ps.setString(2, email);
