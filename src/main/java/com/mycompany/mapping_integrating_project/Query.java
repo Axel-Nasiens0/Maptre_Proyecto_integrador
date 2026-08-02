@@ -8,6 +8,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 /**
  * 
@@ -15,6 +16,20 @@ import java.sql.SQLException;
  */
 
 public class Query {
+
+    private static int activeUserId = -1;
+
+    public static int getActiveUserId() {
+        if (activeUserId <= 0) {
+            return 1; 
+        }
+        return activeUserId;
+    }
+
+    public static void setActiveUserId(int activeUserId) {
+        Query.activeUserId = activeUserId;
+    }
+    
 
     // --- Login validation method ---
     public static boolean validateLogin(String email, String pass) {
@@ -25,7 +40,7 @@ public class Query {
             return false;
         }
 
-        String sql = "SELECT * FROM usuario WHERE correo = ? AND password = ?";
+        String sql = "SELECT * FROM users WHERE email = ? AND password = ?";
         try (PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, email);
             ps.setString(2, pass);
@@ -51,7 +66,7 @@ public class Query {
             return;
         }
 
-        String sql = "INSERT INTO usuario (nombre_usuario, correo, password, rol, fecha_registro) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO users (username, email, password, role, registration_date) VALUES (?, ?, ?, ?, ?)";
         try (PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, name);
             ps.setString(2, email);
@@ -72,23 +87,64 @@ public class Query {
     }
 
     // Method to save land/terrain data calculated by the user
-    public static boolean saveLand(String alias, double perimeter, double area) {
+    public static int registerMap(String title, String description, String creationDate, int userId) {
         Connection con = Connect.connect();
-        if (con == null) return false;
+        if (con == null) {
+            System.out.println("Critical error: No connection to the database.");
+            return -1;
+        }
 
-        String sql = "INSERT INTO land_plots (land_alias, perimeter_m, area_m2) VALUES (?, ?, ?)";
-        try (PreparedStatement ps = con.prepareStatement(sql)) {
-            ps.setString(1, alias);
-            ps.setDouble(2, perimeter);
-            ps.setDouble(3, area);
-            return ps.executeUpdate() > 0;
+        String sql = "INSERT INTO map (title, description, creation_date, user_id) VALUES (?, ?, ?, ?)";
+        try (PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            ps.setString(1, title);
+            ps.setString(2, description);
+            ps.setString(3, creationDate);
+            ps.setInt(4, userId);
+
+            int insertedRows = ps.executeUpdate();
+            if (insertedRows > 0) {
+                try (ResultSet rs = ps.getGeneratedKeys()) {
+                    if (rs.next()) {
+                        System.out.println("Map inserted successfully with ID: " + rs.getInt(1));
+                        return rs.getInt(1);
+                    }
+                }
+            }
         } catch (SQLException e) {
-            System.out.println("Error saving land record: " + e.getMessage());
+            System.out.println("Map Insertion Error: " + e.getMessage());
+        }
+        return -1;
+    }
+
+    public static boolean registerGeographicElement(String modificationDate, double area, double perimeter, int humidity, double temperature, int layerId, int mapId) {
+        String sql = "INSERT INTO geographic_element (modification_date, area, perimeter, humidity, temperature, layer_id, map_id) VALUES (?, ?, ?, ?, ?, ?, ?)";
+
+        try (Connection conn = Connect.connect()) {
+            if (conn == null) {
+                System.out.println("Critical error: No connection to the database.");
+                return false;
+            }
+
+            try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                pstmt.setString(1, modificationDate);
+                pstmt.setDouble(2, area);
+                pstmt.setDouble(3, perimeter);
+                pstmt.setInt(4, humidity);
+                pstmt.setDouble(5, temperature);
+                pstmt.setInt(6, layerId);
+                pstmt.setInt(7, mapId);
+
+                int rowsInserted = pstmt.executeUpdate();
+                return rowsInserted > 0;
+            }
+
+        } catch (SQLException e) {
+            System.err.println("Error inserting geographic element: " + e.getMessage());
             return false;
         }
     }
 
-    // Optional method to query registered land records in the console (SELECT with ordering)
+    /*// Optional method to query registered land records in the console (SELECT with ordering)
     public static void getLandRecords() {
         Connection con = Connect.connect();
         if (con == null) return;
@@ -108,5 +164,5 @@ public class Query {
         } catch (SQLException e) {
             System.out.println("Error querying land records: " + e.getMessage());
         }
-    }
+    }*/
 }
